@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Sepeda Pintar — Matematika Kelas 3</title>
+<style>
+:root{--navy:#15345b;--blue:#2d8cff;--yellow:#ffd84d;--mint:#38d9a9;--pink:#ff7ca8;--paper:#fffdf5}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--navy);background:linear-gradient(160deg,#b8efff 0%,#e8fbff 42%,#d9f8d8 100%);min-height:100vh}
+button{font:inherit;cursor:pointer;border:0}
+.app{max-width:1120px;margin:auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:54px;height:54px;border-radius:18px;background:#fff;display:grid;place-items:center;font-size:31px;box-shadow:0 5px 0 #b4dff0}
+h1{font-size:clamp(22px,4vw,34px);margin:0;line-height:1.05} .sub{font-size:14px;font-weight:700;color:#42698c;margin-top:5px}
+.stats{display:flex;gap:9px;flex-wrap:wrap}.stat{background:#fff;padding:9px 14px;border-radius:15px;box-shadow:0 4px 0 #c7e4ef;font-weight:800}.stat span{color:#1676cf}
+.game-shell{background:#ffffffd9;border:4px solid white;border-radius:26px;overflow:hidden;box-shadow:0 12px 0 #a8d5e6,0 20px 45px #36739a24}
+.scene-wrap{position:relative;height:clamp(270px,42vw,430px);background:linear-gradient(#76d7ff 0%,#c6f4ff 60%,#8fda9b 60%,#6fc77d 100%);overflow:hidden}
+#scene{width:100%;height:100%;display:block}
+.hud{position:absolute;left:16px;top:14px;display:flex;gap:8px;flex-wrap:wrap}.pill{background:#fff;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:900;box-shadow:0 3px 0 #b6ddea}
+.question-panel{padding:18px clamp(14px,3vw,28px) 22px;text-align:center}
+.question-label{font-size:14px;font-weight:900;color:#5780a0;letter-spacing:.5px}
+.question{font-size:clamp(30px,6vw,48px);font-weight:1000;margin:5px 0 14px;color:#173b66}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;margin:0 auto}
+.answer{background:#fff;border:3px solid #cce8f6;border-radius:18px;padding:14px 8px;font-size:clamp(22px,4vw,32px);font-weight:1000;color:#174a79;box-shadow:0 5px 0 #c5dfed;transition:.15s}
+.answer.active{border-color:#ffbd35;background:#fff6cf;transform:translateY(-4px);box-shadow:0 8px 0 #edcf7c}
+.answer.correct{background:#d8ffeb;border-color:#45c995}.answer.wrong{background:#ffe1e9;border-color:#ff86a6}
+.feedback{min-height:28px;margin:13px 0 0;font-weight:900;font-size:17px}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.gesture{display:flex;align-items:center;gap:10px;background:#eaf8ff;padding:10px 14px;border-radius:15px;font-size:13px;font-weight:800}
+.gesture strong{color:#1676cf}.btn{padding:12px 18px;border-radius:14px;background:var(--yellow);color:#563d00;font-weight:1000;box-shadow:0 4px 0 #e6b62e}.btn.secondary{background:#e5f5ff;color:#20517a;box-shadow:0 4px 0 #c0dfef}
+.bottom{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 3px 0;color:#42698c;font-size:13px;font-weight:700}
+.camera-box{position:fixed;right:14px;bottom:14px;width:170px;background:#15345b;color:#fff;padding:8px;border-radius:15px;box-shadow:0 5px 20px #15345b44;z-index:5}
+.camera-box video{width:100%;height:95px;object-fit:cover;border-radius:9px;transform:scaleX(-1);background:#294b6e}
+.camera-status{font-size:11px;font-weight:800;margin-top:5px}.camera-box button{font-size:11px;padding:6px 8px;border-radius:8px;background:#ffd84d;margin-top:6px;font-weight:900}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:#15345b77;padding:18px;z-index:3}
+.modal{background:#fffdf5;border:4px solid white;border-radius:25px;padding:24px;max-width:480px;text-align:center;box-shadow:0 10px 0 #9dc8d9;width:100%}
+.modal h2{font-size:clamp(25px,5vw,34px);margin:4px 0 8px}.modal p{font-size:16px;line-height:1.5;color:#466a89}
+.modal .btn{margin-top:8px;font-size:17px}.hidden{display:none!important}
+@media(max-width:650px){.app{padding:10px}.stats{width:100%}.stat{flex:1;text-align:center;padding:8px}.scene-wrap{height:280px}.camera-box{width:125px;right:8px;bottom:8px;opacity:.94}.camera-box video{height:70px}.gesture{width:100%}.answers{gap:7px}.answer{padding:13px 3px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><div class="logo">🚴</div><div><h1>Petualangan Sepeda Pintar</h1><div class="sub">Belajar perkalian & pembagian • Kelas 3 SD</div></div></div>
+ <div class="stats"><div class="stat">⭐ Skor: <span id="score">0</span></div><div class="stat">🏁 Soal: <span id="round">1</span>/10</div><div class="stat">❤️ Nyawa: <span id="lives">3</span></div></div>
+</header>
+<main class="game-shell">
+ <div class="scene-wrap">
+  <canvas id="scene"></canvas>
+  <div class="hud"><div class="pill">🌈 Jalur Pelangi</div><div class="pill" id="speed">🚲 Siap mengayuh!</div></div>
+  <div class="overlay" id="startOverlay"><div class="modal"><div style="font-size:54px">🚴‍♀️🌟</div><h2>Ayo, mulai bersepeda!</h2><p>Jawab 10 soal matematika untuk mengumpulkan bintang. Pilih jawaban dengan tombol, sentuhan, atau gerakan tangan di depan kamera.</p><button class="btn" id="startBtn">MULAI PETUALANGAN ▶</button></div></div>
+  <div class="overlay hidden" id="endOverlay"><div class="modal"><div style="font-size:52px" id="endEmoji">🏆</div><h2 id="endTitle">Hebat sekali!</h2><p id="endText"></p><button class="btn" id="againBtn">MAIN LAGI ↻</button></div></div>
+ </div>
+ <section class="question-panel">
+  <div class="question-label">✨ TANTANGAN MATEMATIKA</div>
+  <div class="question" id="question">4 × 3 = ?</div>
+  <div class="answers" id="answers">
+   <button class="answer" data-index="0">12</button><button class="answer" data-index="1">9</button><button class="answer" data-index="2">7</button>
+  </div>
+  <div class="feedback" id="feedback" aria-live="polite">Pilih jawaban yang benar, ya!</div>
+  <div class="controls">
+   <div class="gesture">👋 <span><strong>Gesture:</strong> Gerakkan telunjuk ke kiri/kanan untuk memilih, lalu cubit (ibu jari + telunjuk) untuk menjawab.</span></div>
+   <div><button class="btn secondary" id="hintBtn">💡 Petunjuk</button></div>
+  </div>
+ </section>
+</main>
+<div class="bottom"><span>🎯 Perkalian dan pembagian dasar sampai 10</span><span>⌨️ Pintasan: tombol 1, 2, 3 untuk memilih jawaban</span></div>
+</div>
+<div class="camera-box"><video id="video" autoplay playsinline muted></video><div class="camera-status" id="cameraStatus">Kamera belum aktif</div><button id="cameraBtn">Aktifkan gesture</button></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script>
+(() => {
+ const $=id=>document.getElementById(id);
+ let score=0,round=1,lives=3,current=null,locked=false,playing=false,selected=0,questions=[],hintUsed=false;
+ const canvas=$('scene');
+ // Ilustrasi 3D ringan dibuat dengan Three.js. Jika WebGL tidak tersedia, game kuis tetap bisa dimainkan.
+ let renderer,scene,camera,bike,road,clock;
+ try{
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
+  scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(42,canvas.clientWidth/canvas.clientHeight,.1,100);camera.position.set(0,4.2,10);camera.lookAt(0,1,0);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x75a9a0,2));const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(-4,8,6);scene.add(sun);
+  const mat=(color,roughness=.7)=>new THREE.MeshStandardMaterial({color,roughness});
+  const grass=new THREE.Mesh(new THREE.PlaneGeometry(200,200),mat(0x77ce83));grass.rotation.x=-Math.PI/2;grass.position.y=-.06;scene.add(grass);
+  road=new THREE.Group();scene.add(road);
+  const asphalt=new THREE.Mesh(new THREE.PlaneGeometry(5.5,100),mat(0x526d89));asphalt.rotation.x=-Math.PI/2;asphalt.position.set(0,0,-25);road.add(asphalt);
+  for(let z=-70;z<20;z+=5){const dash=new THREE.Mesh(new THREE.BoxGeometry(.16,.04,2.2),mat(0xfff2b2));dash.position.set(0,.03,z);road.add(dash)}
+  for(let x of [-2.7,2.7]){const edge=new THREE.Mesh(new THREE.BoxGeometry(.12,.08,100),mat(0xffffff));edge.position.set(x,.04,-25);road.add(edge)}
+  // Sepeda 3D sederhana
+  bike=new THREE.Group();scene.add(bike);bike.position.set(0,0,2.1);
+  const dark=mat(0x183a60),blue=mat(0x168cff),orange=mat(0xffbd35),skin=mat(0xffc89d),shirt=mat(0xff6e9e);
+  function rod(a,b,r,m){const d=new THREE.Vector3().subVectors(b,a),mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),10),m);mesh.position.copy(a).add(b).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());bike.add(mesh)}
+  function wheel(x,z){const g=new THREE.Group();g.position.set(x,.62,z);bike.add(g);const tire=new THREE.Mesh(new THREE.TorusGeometry(.58,.065,10,32),dark);g.add(tire);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.16,16),orange);hub.rotation.x=Math.PI/2;g.add(hub);for(let i=0;i<8;i++){let a=i*Math.PI/4;const spoke=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.52,5),mat(0xddeeff));spoke.rotation.z=a;g.add(spoke)}return g}
+  const w1=wheel(-.8,0),w2=wheel(.8,0);
+  const A=new THREE.Vector3(-.8,.62,0),B=new THREE.Vector3(.8,.62,0),C=new THREE.Vector3(-.2,1.42,0),D=new THREE.Vector3(.65,1.42,0),E=new THREE.Vector3(.8,1.05,0);
+  [[A,C],[C,B],[A,B],[C,D],[D,E],[E,B]].forEach((p,i)=>rod(p[0],p[1],.045,i%2?blue:orange));
+  rod(new THREE.Vector3(-.45,1.5,0),new THREE.Vector3(.05,1.5,0),.08,dark);
+  rod(new THREE.Vector3(.65,1.42,0),new THREE.Vector3(.9,1.72,0),.035,dark);rod(new THREE.Vector3(.72,1.72,0),new THREE.Vector3(1.08,1.72,0),.04,dark);
+  // Anak pengendara: badan, kepala, helm
+  const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.55,5,12),shirt);torso.position.set(-.12,2.05,0);torso.rotation.z=-.48;bike.add(torso);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.23,20,16),skin);head.position.set(.28,2.55,0);bike.add(head);
+  const helmet=new THREE.Mesh(new THREE.SphereGeometry(.25,20,12,0,Math.PI*2,0,Math.PI/2),orange);helmet.position.set(.28,2.67,0);bike.add(helmet);
+  rod(new THREE.Vector3(.03,2.15,0),new THREE.Vector3(.78,1.72,0),.09,skin);
+  rod(new THREE.Vector3(-.25,1.9,0),new THREE.Vector3(-.5,1.08,0),.1,blue);
+  // Pohon-pohon sederhana di pinggir lintasan
+  for(let i=0;i<18;i++){for(let side of [-1,1]){let x=side*(4.2+Math.random()*2),z=-i*5+4;let trunk=new THREE.Mesh(new THREE.CylinderGeometry(.12,.17,1.1,8),mat(0x98623e));trunk.position.set(x,.5,z);scene.add(trunk);let crown=new THREE.Mesh(new THREE.SphereGeometry(.75,12,10),mat([0x39b878,0x58c88a,0x7bd36c][i%3]));crown.position.set(x,1.45,z);scene.add(crown)}}
+  clock=new THREE.Clock();
+  function animate(){requestAnimationFrame(animate);if(renderer){let t=clock.getElapsedTime();road.position.z=(t*4)%5;bike.rotation.z=Math.sin(t*3)*.035;bike.position.y=Math.sin(t*6)*.035;w1.rotation.y=t*5;w2.rotation.y=t*5;renderer.render(scene,camera)}}animate();
+  new ResizeObserver(()=>{if(renderer){renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);camera.aspect=canvas.clientWidth/canvas.clientHeight;camera.updateProjectionMatrix()}}).observe(canvas);
+ }catch(e){canvas.style.background='linear-gradient(#9be5ff,#83ce88)';}
+ const pool=[];
+ function makeQuestion(){
+  const divide=Math.random()<.42;let a,b,answer,op;
+  if(divide){b=2+Math.floor(Math.random()*9);answer=1+Math.floor(Math.random()*10);a=b*answer;op='÷'}
+  else{a=1+Math.floor(Math.random()*10);b=1+Math.floor(Math.random()*10);answer=a*b;op='×'}
+  let opts=new Set([answer]);while(opts.size<3){let n=Math.max(0,answer+Math.floor(Math.random()*13)-6);if(n!==answer)opts.add(n)}
+  let arr=[...opts].sort(()=>Math.random()-.5);return {a,b,op,answer,arr,correct:arr.indexOf(answer)};
+ }
+ function renderQuestion(){current=makeQuestion();locked=false;hintUsed=false;selected=0;$('question').textContent=`${current.a} ${current.op} ${current.b} = ?`;$('feedback').textContent='Pilih jawaban yang benar, ya!';$('feedback').style.color='#42698c';
+  [...$('answers').children].forEach((el,i)=>{el.textContent=current.arr[i];el.className='answer';el.disabled=false});highlight(0)}
+ function highlight(i){selected=(i+3)%3;[...$('answers').children].forEach((el,j)=>el.classList.toggle('active',j===selected))}
+ function updateStats(){$('score').textContent=score;$('round').textContent=Math.min(round,10);$('lives').textContent=lives}
+ function start(){score=0;round=1;lives=3;playing=true;$('startOverlay').classList.add('hidden');$('endOverlay').classList.add('hidden');$('speed').textContent='🚲 Melaju!';updateStats();renderQuestion()}
+ function answer(i){if(!playing||locked)return;locked=true;let ok=i===current.correct;[...$('answers').children].forEach((el,j)=>{el.disabled=true;if(j===current.correct)el.classList.add('correct');else if(j===i)el.classList.add('wrong')});
+  if(ok){score+=10;$('feedback').textContent=['Hebat! Jawabanmu benar! 🌟','Mantap! Sepedamu melaju! 🚴','Pintar sekali! Dapat 10 bintang! ⭐'][Math.floor(Math.random()*3)];$('feedback').style.color='#15996c';$('speed').textContent='⚡ Melaju cepat!'}
+  else{lives--;$('feedback').textContent=`Belum tepat. Jawabannya ${current.answer}. Ayo coba lagi! 💪`;$('feedback').style.color='#dc5278';$('speed').textContent='🚲 Tetap semangat!'}
+  updateStats();setTimeout(()=>{if(lives<=0||round>=10){finish()}else{round++;updateStats();renderQuestion()}},1450)
+ }
+ function finish(){playing=false;$('endOverlay').classList.remove('hidden');$('endEmoji').textContent=score>=80?'🏆':score>=50?'🥳':'🌈';$('endTitle').textContent=score>=80?'Juara Matematika!':score>=50?'Hebat, Terus Berlatih!':'Petualangan Selesai!';$('endText').textContent=`Kamu mendapat ${score} bintang dari ${Math.min(round,10)} soal. ${score>=80?'Luar biasa! Kamu mengayuh dan berhitung dengan hebat!':'Terus berlatih, ya. Setiap latihan membuatmu semakin pintar!'}`}
+ $('startBtn').onclick=start;$('againBtn').onclick=start;
+ [...$('answers').children].forEach((el,i)=>el.onclick=()=>answer(i));
+ $('hintBtn').onclick=()=>{if(!playing||locked)return;$('feedback').textContent=current.op==='×'?`Petunjuk: ${current.a} kelompok, masing-masing berisi ${current.b}. Coba hitung loncat!`:`Petunjuk: Bagikan ${current.a} benda menjadi ${current.b} kelompok sama banyak.`;$('feedback').style.color='#a47700'};
+ document.addEventListener('keydown',e=>{if(e.key>='1'&&e.key<='3')answer(Number(e.key)-1);if(e.key==='ArrowLeft')highlight(selected-1);if(e.key==='ArrowRight')highlight(selected+1);if(e.key==='Enter')answer(selected)});
+ // Gesture kamera: telunjuk mengarahkan pilihan, cubit untuk konfirmasi.
+ const video=$('video'),status=$('cameraStatus');let cameraRunner=null,lastPinch=0,lastChoice=0;
+ $('cameraBtn').onclick=async()=>{
+  if(!window.Hands||!window.Camera){status.textContent='Gesture perlu koneksi internet';return}
+  try{
+   const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`});
+   hands.setOptions({maxNumHands:1,modelComplexity:1,minDetectionConfidence:.65,minTrackingConfidence:.6});
+   hands.onResults(results=>{
+    const lm=results.multiHandLandmarks&&results.multiHandLandmarks[0];if(!lm)return;
+    const x=1-lm[8].x;const choice=x<.36?0:x>.67?2:1;
+    if(Math.abs(choice-lastChoice)>0){lastChoice=choice}
+    highlight(choice);
+    const pinch=Math.hypot(lm[4].x-lm[8].x,lm[4].y-lm[8].y)<.055;
+    if(pinch&&Date.now()-lastPinch>1300){lastPinch=Date.now();answer(choice)}
+    status.textContent=`Gesture aktif • Pilihan ${choice+1}${pinch?' • Cubit!':''}`;
+   });
+   cameraRunner=new Camera(video,{onFrame:async()=>{await hands.send({image:video})},width:640,height:480});await cameraRunner.start();status.textContent='Arahkan telunjuk & cubit';$('cameraBtn').textContent='Gesture aktif';
+  }catch(e){status.textContent='Kamera tidak dapat diakses. Izinkan kamera.'}
+ };
+})();
+</script>
+</body>
+</html>
